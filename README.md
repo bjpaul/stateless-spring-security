@@ -1,2 +1,2 @@
-# restful-spring-security
-Restful Spring Security application
+# stateless-spring-security
+Stateless Spring Security application
