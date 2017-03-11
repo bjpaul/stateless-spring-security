@@ -4,6 +4,8 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import stateless.spring.security.enums.Authority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +20,12 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import stateless.spring.security.exception.CustomAccessDeniedHandler;
 import stateless.spring.security.exception.CustomBasicAuthenticationEntryPoint;
+import stateless.spring.security.filter.StatelessAuthenticationFilter;
+import stateless.spring.security.filter.StatelessLoginFilter;
 import stateless.spring.security.repository.CredentialsRepository;
 import stateless.spring.security.service.AuthenticationService;
+import stateless.spring.security.service.token.SimpleTokenService;
+import stateless.spring.security.service.token.TokenAuthenticationService;
 
 /**
  * This application is secured at both the URL level for some parts, and the
@@ -56,6 +62,17 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
         return new CustomBasicAuthenticationEntryPoint();
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public TokenAuthenticationService tokenAuthenticationService(){
+        return new SimpleTokenService();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -64,15 +81,19 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/employee/count").permitAll()
+                        .antMatchers("/login", "/employee/count").permitAll()
                         .antMatchers("/employee/profile").hasAuthority(Authority.ROLE_USER.getAuthority())
                         .antMatchers("/employee/**").hasAuthority(Authority.ROLE_ADMIN.getAuthority())
                 .and()
-                    .httpBasic()
-                .and()
                     .exceptionHandling()
                         .accessDeniedHandler(accessDeniedHandler())
-                        .authenticationEntryPoint(basicAuthenticationEntryPoint());
+                        .authenticationEntryPoint(basicAuthenticationEntryPoint())
+                .and()
+                     // custom JSON based authentication by POST of {"username":"<name>","password":"<password>"} which sets the token header upon authentication
+                    .addFilterBefore(new StatelessLoginFilter(authenticationManagerBean(), tokenAuthenticationService()), UsernamePasswordAuthenticationFilter.class)
+                     // custom Token based authentication based on the header previously given to the client
+                    .addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService()), UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean
