@@ -5,10 +5,7 @@ import java.util.List;
 
 import stateless.spring.security.domain.Credentials;
 import stateless.spring.security.domain.Employee;
-import stateless.spring.security.dto.entity.user.CredentialsDto;
-import stateless.spring.security.dto.entity.user.EmployeeCountDto;
-import stateless.spring.security.dto.entity.user.EmployeeDto;
-import stateless.spring.security.dto.entity.user.EmployeeList;
+import stateless.spring.security.dto.entity.employee.*;
 import stateless.spring.security.repository.CredentialsRepository;
 import stateless.spring.security.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,20 @@ public class EmployeeService {
 
 	@Autowired
 	private CredentialsRepository credentialsRepository;
+
+	public ProfileDto fetchProfile(Credentials credentials){
+		return new ProfileDto(credentials);
+	}
+
+	public ProfileDto updateProfile(Credentials credentials, ProfileDto profileDto){
+		credentials.setUsername(profileDto.getUsername());
+		credentials.setPassword(profileDto.getPassword());
+		Employee employee = credentials.getEmployee();
+		employee.setCompetency(profileDto.getCompetency());
+		employee.setName(profileDto.getName());
+		credentialsRepository.save(credentials);
+		return new ProfileDto(credentials);
+	}
 
 	public EmployeeCountDto count() {
 		return new EmployeeCountDto(employeeRepository.count());

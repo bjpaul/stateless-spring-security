@@ -1,15 +1,13 @@
-package stateless.spring.security.dto.entity.user;
+package stateless.spring.security.dto.entity.employee;
 
 import stateless.spring.security.domain.Employee;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import stateless.spring.security.enums.Competency;
 
-@JsonPropertyOrder({ "name", "competency", "enabled" })
+@JsonPropertyOrder({"id", "name", "competency", "enabled" })
 public class EmployeeDto {
 
-	@JsonIgnore
 	private long id;
 	
     private String name;

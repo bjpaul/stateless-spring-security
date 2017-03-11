@@ -2,9 +2,10 @@ package stateless.spring.security.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import stateless.spring.security.domain.Credentials;
-import stateless.spring.security.dto.entity.user.CredentialsDto;
-import stateless.spring.security.dto.entity.user.EmployeeDto;
-import stateless.spring.security.dto.entity.user.EmployeeList;
+import stateless.spring.security.dto.entity.employee.CredentialsDto;
+import stateless.spring.security.dto.entity.employee.EmployeeDto;
+import stateless.spring.security.dto.entity.employee.EmployeeList;
+import stateless.spring.security.dto.entity.employee.ProfileDto;
 import stateless.spring.security.dto.response.AbstractResponseDto;
 import stateless.spring.security.service.EmployeeService;
 import stateless.spring.security.util.ResponseUtil;
@@ -27,15 +28,23 @@ public class EmployeeController {
  
     //-------------------Employee Profile Detail--------------------------------------------------------
     
-    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    @RequestMapping(value = {"/profile", "/profile/"}, method = RequestMethod.GET)
     public HttpEntity<AbstractResponseDto> profileDetail(@AuthenticationPrincipal Credentials credentials) {
-        EmployeeDto employee = new EmployeeDto(credentials.getEmployee());
-        return ResponseUtil.success().body(employee).message("Profile detail fetched successfully !!!").send(HttpStatus.OK);
+        ProfileDto profile = employeeService.fetchProfile(credentials);
+        return ResponseUtil.success().body(profile).message("Profile detail fetched successfully !!!").send(HttpStatus.OK);
     }
-    
+
+    //-------------------Updating Employee Profile Detail--------------------------------------------------------
+
+    @RequestMapping(value = {"/profile", "/profile/"}, method = RequestMethod.PUT)
+    public HttpEntity<AbstractResponseDto> updateProfileDetail(@AuthenticationPrincipal Credentials credentials, @RequestBody ProfileDto profileDto) {
+        ProfileDto profile = employeeService.updateProfile(credentials, profileDto);
+        return ResponseUtil.success().body(profile).message("Profile updated successfully !!!").send(HttpStatus.OK);
+    }
+
     //-------------------Count employee--------------------------------------------------------
     
-    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    @RequestMapping(value = {"/count","/count/"}, method = RequestMethod.GET)
     public HttpEntity<AbstractResponseDto> employeeCout() {
     	
         return ResponseUtil.success().body(employeeService.count()).message("Employee count fetched successfully !!!").send(HttpStatus.OK);
@@ -55,7 +64,7 @@ public class EmployeeController {
  
     //-------------------Retrieve Single Employee--------------------------------------------------------
      
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = {"/{id}", "/{id}/"}, method = RequestMethod.GET)
     public ResponseEntity<AbstractResponseDto> getUser(@PathVariable("id") long id) {
         EmployeeDto employee = employeeService.findById(id);
         if (employee == null) {
@@ -78,7 +87,7 @@ public class EmployeeController {
 
     //------------------- Enable an Employee --------------------------------------------------------
 
-    @RequestMapping(value = "/{id}/enable", method = RequestMethod.PUT)
+    @RequestMapping(value = {"/{id}/enable", "/{id}/enable/"}, method = RequestMethod.PUT)
     public ResponseEntity<AbstractResponseDto> enableEmployee(@PathVariable("id") long id) {
 
         EmployeeDto employee = employeeService.findById(id);
@@ -91,7 +100,7 @@ public class EmployeeController {
 
     //------------------- Disable an Employee --------------------------------------------------------
 
-    @RequestMapping(value = "/{id}/disable", method = RequestMethod.PUT)
+    @RequestMapping(value = {"/{id}/disable", "/{id}/disable/"}, method = RequestMethod.PUT)
     public ResponseEntity<AbstractResponseDto> disableEmployee(@PathVariable("id") long id) {
 
         EmployeeDto employee = employeeService.findById(id);
@@ -105,7 +114,7 @@ public class EmployeeController {
 
     //------------------- Update an Employee --------------------------------------------------------
      
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = {"/{id}", "/{id}/"}, method = RequestMethod.PUT)
     public ResponseEntity<AbstractResponseDto> updateEmployee(@PathVariable("id") long id, @RequestBody EmployeeDto employee) {
          
         EmployeeDto current = employeeService.findById(id);
@@ -120,7 +129,7 @@ public class EmployeeController {
  
     //------------------- Delete an Employee --------------------------------------------------------
      
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/{id}", "/{id}/"}, method = RequestMethod.DELETE)
     public ResponseEntity<AbstractResponseDto> deleteEmployee(@PathVariable("id") long id) {
  
         EmployeeDto employee = employeeService.findById(id);

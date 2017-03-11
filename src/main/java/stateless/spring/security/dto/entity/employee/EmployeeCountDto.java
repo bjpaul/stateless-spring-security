@@ -1,4 +1,4 @@
-package stateless.spring.security.dto.entity.user;
+package stateless.spring.security.dto.entity.employee;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
