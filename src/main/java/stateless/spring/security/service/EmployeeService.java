@@ -3,7 +3,6 @@ package stateless.spring.security.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import stateless.spring.security.domain.Credentials;
 import stateless.spring.security.domain.Employee;
 import stateless.spring.security.dto.entity.employee.*;
 import stateless.spring.security.repository.CredentialsRepository;
@@ -19,18 +18,15 @@ public class EmployeeService {
 	@Autowired
 	private CredentialsRepository credentialsRepository;
 
-	public ProfileDto fetchProfile(Credentials credentials){
-		return new ProfileDto(credentials);
+	public ProfileDto fetchProfile(Employee employee){
+		return new ProfileDto(employee);
 	}
 
-	public ProfileDto updateProfile(Credentials credentials, ProfileDto profileDto){
-		credentials.setUsername(profileDto.getUsername());
-		credentials.setPassword(profileDto.getPassword());
-		Employee employee = credentials.getEmployee();
+	public ProfileDto updateProfile(Employee employee, ProfileDto profileDto){
 		employee.setCompetency(profileDto.getCompetency());
 		employee.setName(profileDto.getName());
-		credentialsRepository.save(credentials);
-		return new ProfileDto(credentials);
+		employeeRepository.save(employee);
+		return new ProfileDto(employee);
 	}
 
 	public EmployeeCountDto count() {

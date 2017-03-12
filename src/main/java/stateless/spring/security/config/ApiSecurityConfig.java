@@ -13,13 +13,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import stateless.spring.security.exception.CustomAccessDeniedHandler;
 import stateless.spring.security.exception.CustomBasicAuthenticationEntryPoint;
 import stateless.spring.security.repository.CredentialsRepository;
-import stateless.spring.security.service.AuthenticationService;
+import stateless.spring.security.service.CustomAuthenticationProvider;
 
 /**
  * This application is secured at both the URL level for some parts, and the
@@ -35,15 +34,10 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CredentialsRepository credentialsRepository;
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new AuthenticationService(credentialsRepository);
-    }
-
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.userDetailsService(userDetailsService());
+    @Override
+    protected void configure(
+            AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(new CustomAuthenticationProvider(credentialsRepository));
     }
 
     @Bean
