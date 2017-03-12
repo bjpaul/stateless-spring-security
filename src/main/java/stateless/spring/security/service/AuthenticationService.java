@@ -1,5 +1,6 @@
 package stateless.spring.security.service;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import stateless.spring.security.domain.Credentials;
 import stateless.spring.security.repository.CredentialsRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +19,11 @@ public class AuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
             if(username == null ||  username.isEmpty()){
-                throw new UsernameNotFoundException("Employee not found");
+                throw new UsernameNotFoundException("No credentials found");
             }
             Credentials credentials = credentialsRepository.findOne(username);
             if (credentials == null) {
-                throw new UsernameNotFoundException("Employee not found");
+                throw new BadCredentialsException("Employee not found");
             }
             return credentials;
         } catch (Exception e) {

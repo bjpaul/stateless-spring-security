@@ -28,7 +28,7 @@ public class EmployeeController {
  
     //-------------------Employee Profile Detail--------------------------------------------------------
     
-    @RequestMapping(value = {"/profile", "/profile/"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/profile", "/profile/"}, method = {RequestMethod.GET, RequestMethod.POST})
     public HttpEntity<AbstractResponseDto> profileDetail(@AuthenticationPrincipal Credentials credentials) {
         ProfileDto profile = employeeService.fetchProfile(credentials);
         return ResponseUtil.success().body(profile).message("Profile detail fetched successfully !!!").send(HttpStatus.OK);
