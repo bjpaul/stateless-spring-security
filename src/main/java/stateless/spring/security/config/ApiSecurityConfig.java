@@ -14,13 +14,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import stateless.spring.security.exception.CustomAccessDeniedHandler;
 import stateless.spring.security.filter.StatelessAuthenticationFilter;
 import stateless.spring.security.filter.StatelessLoginFilter;
 import stateless.spring.security.repository.CredentialsRepository;
-import stateless.spring.security.service.AuthenticationService;
+import stateless.spring.security.service.CustomAuthenticationProvider;
 import stateless.spring.security.service.token.SimpleTokenService;
 import stateless.spring.security.service.token.TokenAuthenticationService;
 
@@ -38,15 +37,10 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CredentialsRepository credentialsRepository;
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new AuthenticationService(credentialsRepository);
-    }
-
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.userDetailsService(userDetailsService());
+    @Override
+    protected void configure(
+            AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(new CustomAuthenticationProvider(credentialsRepository));
     }
 
     @Bean
