@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import stateless.spring.security.exception.CustomAccessDeniedHandler;
 import stateless.spring.security.exception.CustomBasicAuthenticationEntryPoint;
 import stateless.spring.security.filter.StatelessAuthenticationFilter;
@@ -58,11 +57,6 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BasicAuthenticationEntryPoint basicAuthenticationEntryPoint() {
-        return new CustomBasicAuthenticationEntryPoint();
-    }
-
-    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
@@ -87,7 +81,6 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .exceptionHandling()
                         .accessDeniedHandler(accessDeniedHandler())
-                        .authenticationEntryPoint(basicAuthenticationEntryPoint())
                 .and()
                      // custom JSON based authentication by POST of {"username":"<name>","password":"<password>"} which sets the token header upon authentication
                     .addFilterBefore(new StatelessLoginFilter(authenticationManagerBean(), tokenAuthenticationService()), UsernamePasswordAuthenticationFilter.class)
