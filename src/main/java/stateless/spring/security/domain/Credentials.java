@@ -1,6 +1,5 @@
 package stateless.spring.security.domain;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import stateless.spring.security.enums.Authority;
 
 import java.util.Collection;
@@ -8,7 +7,7 @@ import java.util.Collection;
 import javax.persistence.*;
 
 @Entity
-public class Credentials implements UserDetails {
+public class Credentials{
 
     @Id
     private String username;
@@ -37,62 +36,37 @@ public class Credentials implements UserDetails {
         this.employee = employee;
     }
 
-    public Employee getEmployee() {
-        return employee;
-    }
-
-
-    @Override
-    public Collection<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
         return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return employee.isEnabled();
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Collection<Authority> getAuthorities() {
+        return authorities;
     }
 
     public void setAuthorities(Collection<Authority> authorities) {
         this.authorities = authorities;
     }
 
+    public Employee getEmployee() {
+        return employee;
+    }
+
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
-
 
     @Override
     public String toString() {
