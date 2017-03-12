@@ -19,6 +19,8 @@ public class Credentials{
 
     private String password;
 
+    private String salt;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(
             name = "credentials_with_role",
@@ -72,6 +74,14 @@ public class Credentials{
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override

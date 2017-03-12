@@ -5,9 +5,12 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import stateless.spring.security.enums.Authority;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.AccessDeniedHandler;
+
 import stateless.spring.security.exception.CustomAccessDeniedHandler;
 import stateless.spring.security.exception.CustomAuthenticationFailureHandler;
 import stateless.spring.security.filter.StatelessAuthenticationFilter;
@@ -24,6 +28,9 @@ import stateless.spring.security.filter.StatelessLoginFilter;
 import stateless.spring.security.repository.CredentialsRepository;
 import stateless.spring.security.repository.TokenRepository;
 import stateless.spring.security.service.CustomAuthenticationProvider;
+import stateless.spring.security.service.crypto.BCryptPasswordResolver;
+import stateless.spring.security.service.crypto.PasswordResolver;
+import stateless.spring.security.service.crypto.TextEncryptPasswordResolver;
 import stateless.spring.security.service.token.PersistentTokenService;
 import stateless.spring.security.service.token.TokenAuthenticationService;
 
@@ -47,10 +54,13 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${token.validity}")
     private long tokenValidity;
 
+    @Value("${token.secret}")
+    private String tokenSecret;
+
     @Override
     protected void configure(
             AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(new CustomAuthenticationProvider(credentialsRepository));
+        auth.authenticationProvider(new CustomAuthenticationProvider(credentialsRepository, passwordResolver()));
     }
 
     @Bean
@@ -66,6 +76,12 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationFailureHandler failureHandler(){
         return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public PasswordResolver passwordResolver(){
+        return new TextEncryptPasswordResolver(tokenSecret);
+//        return new BCryptPasswordResolver(new BCryptPasswordEncoder());
     }
 
     @Override

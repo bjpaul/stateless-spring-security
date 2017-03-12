@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 
 public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
@@ -19,7 +18,6 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
     public void commence(final HttpServletRequest request, 
     		final HttpServletResponse response, 
     		final AuthenticationException authException) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest)((SecurityContextHolderAwareRequestWrapper)request).getRequest();
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     	response.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
         PrintWriter writer = response.getWriter();

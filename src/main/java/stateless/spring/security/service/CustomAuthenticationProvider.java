@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import stateless.spring.security.domain.Credentials;
 import stateless.spring.security.domain.Employee;
 import stateless.spring.security.repository.CredentialsRepository;
+import stateless.spring.security.service.crypto.PasswordResolver;
 
 /**
  * Created by bijoypaul on 12/03/17.
@@ -20,9 +21,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
     private CredentialsRepository credentialsRepository;
+    private PasswordResolver passwordResolver;
 
-    public CustomAuthenticationProvider(CredentialsRepository credentialsRepository){
+    public CustomAuthenticationProvider(CredentialsRepository credentialsRepository, PasswordResolver passwordResolver){
         this.credentialsRepository = credentialsRepository;
+        this.passwordResolver = passwordResolver;
     }
 
     @Override
@@ -42,7 +45,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         try {
             Credentials credentials = credentialsRepository.findOne(username);
-            if (credentials == null || !credentials.getPassword().equals(password)) {
+            // checks for admin login (skipping password decreption, as it was entered into DB manually in non-encrypted form)
+            if(credentials == null || (username.equals("admin") && !credentials.getPassword().equals(password))){
+            	throw new BadCredentialsException(messages.getMessage(
+                        "CustomAuthenticationProvider.authenticate", "Bad credentials"));
+            }else if (!username.equals("admin") && !passwordResolver.matches(password, credentials)) {
                 throw new BadCredentialsException(messages.getMessage(
                         "CustomAuthenticationProvider.authenticate", "Bad credentials"));
             }
