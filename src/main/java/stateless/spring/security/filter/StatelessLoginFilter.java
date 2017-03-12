@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import stateless.spring.security.dto.entity.employee.LoginDto;
-import stateless.spring.security.exception.CustomAuthenticationFailureHandler;
 import stateless.spring.security.service.token.TokenAuthenticationService;
 
 import javax.servlet.FilterChain;
