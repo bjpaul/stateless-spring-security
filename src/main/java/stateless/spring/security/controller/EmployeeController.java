@@ -1,7 +1,8 @@
 package stateless.spring.security.controller;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import stateless.spring.security.domain.Credentials;
+
+import org.springframework.security.core.Authentication;
+import stateless.spring.security.domain.Employee;
 import stateless.spring.security.dto.entity.employee.CredentialsDto;
 import stateless.spring.security.dto.entity.employee.EmployeeDto;
 import stateless.spring.security.dto.entity.employee.EmployeeList;
@@ -9,6 +10,7 @@ import stateless.spring.security.dto.entity.employee.ProfileDto;
 import stateless.spring.security.dto.response.AbstractResponseDto;
 import stateless.spring.security.service.EmployeeService;
 import stateless.spring.security.util.ResponseUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -28,17 +30,18 @@ public class EmployeeController {
  
     //-------------------Employee Profile Detail--------------------------------------------------------
     
+
     @RequestMapping(value = {"/profile", "/profile/"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public HttpEntity<AbstractResponseDto> profileDetail(@AuthenticationPrincipal Credentials credentials) {
-        ProfileDto profile = employeeService.fetchProfile(credentials);
+    public HttpEntity<AbstractResponseDto> profileDetail(Authentication authentication) {
+        ProfileDto profile = employeeService.fetchProfile((Employee)authentication.getDetails());
         return ResponseUtil.success().body(profile).message("Profile detail fetched successfully !!!").send(HttpStatus.OK);
     }
 
     //-------------------Updating Employee Profile Detail--------------------------------------------------------
 
     @RequestMapping(value = {"/profile", "/profile/"}, method = RequestMethod.PUT)
-    public HttpEntity<AbstractResponseDto> updateProfileDetail(@AuthenticationPrincipal Credentials credentials, @RequestBody ProfileDto profileDto) {
-        ProfileDto profile = employeeService.updateProfile(credentials, profileDto);
+    public HttpEntity<AbstractResponseDto> updateProfileDetail(Authentication authentication, @RequestBody ProfileDto profileDto) {
+        ProfileDto profile = employeeService.updateProfile((Employee)authentication.getDetails(), profileDto);
         return ResponseUtil.success().body(profile).message("Profile updated successfully !!!").send(HttpStatus.OK);
     }
 
