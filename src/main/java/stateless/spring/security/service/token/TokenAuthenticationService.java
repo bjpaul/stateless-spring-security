@@ -4,11 +4,15 @@ import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by bijoypaul on 11/03/17.
  */
 public abstract class TokenAuthenticationService {
+
+    public Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected final String AUTH_HEADER_NAME = "MY-CUSTOM-TOKEN";
 
