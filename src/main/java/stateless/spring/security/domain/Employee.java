@@ -1,12 +1,16 @@
 package stateless.spring.security.domain;
 
+import org.hibernate.annotations.*;
 import stateless.spring.security.enums.Competency;
 
 import java.util.Set;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="employee")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

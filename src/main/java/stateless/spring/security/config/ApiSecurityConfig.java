@@ -1,9 +1,11 @@
 package stateless.spring.security.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import stateless.spring.security.enums.Authority;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import stateless.spring.security.exception.CustomAccessDeniedHandler;
+import stateless.spring.security.exception.CustomAuthenticationFailureHandler;
 import stateless.spring.security.filter.StatelessAuthenticationFilter;
 import stateless.spring.security.filter.StatelessLoginFilter;
 import stateless.spring.security.repository.CredentialsRepository;
+import stateless.spring.security.repository.TokenRepository;
 import stateless.spring.security.service.CustomAuthenticationProvider;
-import stateless.spring.security.service.token.SimpleTokenService;
+import stateless.spring.security.service.token.PersistentTokenService;
 import stateless.spring.security.service.token.TokenAuthenticationService;
 
 /**
@@ -37,6 +41,12 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CredentialsRepository credentialsRepository;
 
+    @Autowired
+    private TokenRepository tokenRepository;
+
+    @Value("${token.validity}")
+    private long tokenValidity;
+
     @Override
     protected void configure(
             AuthenticationManagerBuilder auth) throws Exception {
@@ -50,7 +60,12 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public TokenAuthenticationService tokenAuthenticationService(){
-        return new SimpleTokenService();
+        return new PersistentTokenService(credentialsRepository, tokenRepository, tokenValidity);
+    }
+
+    @Bean
+    public AuthenticationFailureHandler failureHandler(){
+        return new CustomAuthenticationFailureHandler();
     }
 
     @Override
@@ -69,9 +84,9 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                         .accessDeniedHandler(accessDeniedHandler())
                 .and()
                      // custom JSON based authentication by POST of {"username":"<name>","password":"<password>"} which sets the token header upon authentication
-                    .addFilterBefore(new StatelessLoginFilter(authenticationManagerBean(), tokenAuthenticationService()), UsernamePasswordAuthenticationFilter.class)
-                     // custom Token based authentication based on the header previously given to the client
-                    .addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService()), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new StatelessLoginFilter(authenticationManagerBean(), tokenAuthenticationService(), failureHandler()), UsernamePasswordAuthenticationFilter.class)
+                     // custom TokenStorage based authentication based on the header previously given to the client
+                    .addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService(), failureHandler()), UsernamePasswordAuthenticationFilter.class);
 
     }
 

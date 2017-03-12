@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import stateless.spring.security.dto.entity.employee.LoginDto;
@@ -28,10 +29,10 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 
     private final TokenAuthenticationService tokenAuthenticationService;
 
-    public StatelessLoginFilter(AuthenticationManager authenticationManager, TokenAuthenticationService tokenAuthenticationService) {
+    public StatelessLoginFilter(AuthenticationManager authenticationManager, TokenAuthenticationService tokenAuthenticationService, AuthenticationFailureHandler failureHandler) {
         super(new AntPathRequestMatcher("/login", "POST"));
         setAuthenticationManager(authenticationManager);
-        setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler());
+        setAuthenticationFailureHandler(failureHandler);
         setAuthenticationSuccessHandler(new ForwardAuthenticationSuccessHandler("/employee/profile"));
         this.tokenAuthenticationService = tokenAuthenticationService;
     }
@@ -48,9 +49,6 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
                 credentials.getUsername(), credentials.getPassword());
-
-        // Allow to set the "details" property
-        authRequest.setDetails(null);
 
         return this.getAuthenticationManager().authenticate(authRequest);
     }
