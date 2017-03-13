@@ -6,6 +6,9 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -82,6 +85,9 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordResolver passwordResolver(){
         return new TextEncryptPasswordResolver(tokenSecret);
 //        return new BCryptPasswordResolver(new BCryptPasswordEncoder());
+//        return new BCryptPasswordResolver(new Pbkdf2PasswordEncoder(tokenSecret));
+//        return new BCryptPasswordResolver(new StandardPasswordEncoder(tokenSecret));
+//        return new BCryptPasswordResolver(new SCryptPasswordEncoder());
     }
 
     @Override
