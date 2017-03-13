@@ -6,11 +6,11 @@ import stateless.spring.security.domain.Credentials;
 /**
  * Created by bijoypaul on 13/03/17.
  */
-public class BCryptPasswordResolver implements PasswordResolver {
+public class CryptPasswordResolver implements PasswordResolver {
 
     private PasswordEncoder passwordEncoder;
 
-    public BCryptPasswordResolver(PasswordEncoder passwordEncoder){
+    public CryptPasswordResolver(PasswordEncoder passwordEncoder){
         this.passwordEncoder = passwordEncoder;
     }
 

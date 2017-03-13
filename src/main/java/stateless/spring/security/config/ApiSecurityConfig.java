@@ -5,10 +5,6 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -31,7 +27,6 @@ import stateless.spring.security.filter.StatelessLoginFilter;
 import stateless.spring.security.repository.CredentialsRepository;
 import stateless.spring.security.repository.TokenRepository;
 import stateless.spring.security.service.CustomAuthenticationProvider;
-import stateless.spring.security.service.crypto.BCryptPasswordResolver;
 import stateless.spring.security.service.crypto.PasswordResolver;
 import stateless.spring.security.service.crypto.TextEncryptPasswordResolver;
 import stateless.spring.security.service.token.PersistentTokenService;
@@ -84,10 +79,10 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordResolver passwordResolver(){
         return new TextEncryptPasswordResolver(tokenSecret);
-//        return new BCryptPasswordResolver(new BCryptPasswordEncoder());
-//        return new BCryptPasswordResolver(new Pbkdf2PasswordEncoder(tokenSecret));
-//        return new BCryptPasswordResolver(new StandardPasswordEncoder(tokenSecret));
-//        return new BCryptPasswordResolver(new SCryptPasswordEncoder());
+//        return new CryptPasswordResolver(new BCryptPasswordEncoder());
+//        return new CryptPasswordResolver(new Pbkdf2PasswordEncoder(tokenSecret));
+//        return new CryptPasswordResolver(new StandardPasswordEncoder(tokenSecret));
+//        return new CryptPasswordResolver(new SCryptPasswordEncoder());
     }
 
     @Override
