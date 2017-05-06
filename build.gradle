@@ -13,8 +13,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-
-jar {
+apply plugin: 'war'
+war {
 	baseName = 'rest-security'
 	version = '0.0.1-SNAPSHOT'
 }
