@@ -3,9 +3,7 @@ MAINTAINER bijoy.paul@tothenew.com
 COPY ./src /code/src
 COPY ./build.gradle /code/build.gradle
 WORKDIR /code
-ENV host=mysql-container
-ENV logDir=/logs
-VOLUME ["/tmp", "/logs"]
+VOLUME /tmp
 RUN java -version \
     && export GRADLE_HOME=/opt/gradle/gradle-3.4.1 \
     && export PATH=$PATH:$GRADLE_HOME/bin \
