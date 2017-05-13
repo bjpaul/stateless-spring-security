@@ -64,10 +64,11 @@ public class CredentialsDto {
 		return new Credentials(new Employee(name, competency), username, password, authorities);
 	}
 
-	public EmployeeDto detail(){
-		EmployeeDto employee = new EmployeeDto();
-		employee.setCompetency(this.getCompetency());
-		employee.setName(this.getName());
-		return employee;
+	public EmployeeDto detail(Employee employee){
+		EmployeeDto employeeDto = new EmployeeDto();
+		employeeDto.setId(employee.getId());
+		employeeDto.setCompetency(employee.getCompetency());
+		employeeDto.setName(employee.getName());
+		return employeeDto;
 	}
 }

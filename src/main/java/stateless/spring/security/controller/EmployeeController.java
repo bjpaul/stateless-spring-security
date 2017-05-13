@@ -81,11 +81,11 @@ public class EmployeeController {
     //-------------------Create an Employee--------------------------------------------------------
      
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<AbstractResponseDto> createEmployee(@RequestBody CredentialsDto employee) {
+    public ResponseEntity<AbstractResponseDto> createEmployee(@RequestBody CredentialsDto credentialsDto) {
  
-        employeeService.saveEmployee(employee);
+        Employee employee = employeeService.saveEmployee(credentialsDto);
  
-        return ResponseUtil.success().body(employee.detail()).message("Employee created successfully !!!").send(HttpStatus.CREATED);
+        return ResponseUtil.success().body(credentialsDto.detail(employee)).message("Employee created successfully !!!").send(HttpStatus.CREATED);
     }
 
     //------------------- Enable an Employee --------------------------------------------------------

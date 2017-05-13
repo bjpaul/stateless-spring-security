@@ -8,4 +8,3 @@ docker run --net my-env -itd --name mysql-container -e MYSQL_ROOT_PASSWORD=root 
 sudo mkdir /logs
 
 docker run --net my-env -itd --name app-container -p 9090:8080 bijoydocker/restful-security
-

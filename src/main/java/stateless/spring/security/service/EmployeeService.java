@@ -3,12 +3,14 @@ package stateless.spring.security.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import stateless.spring.security.domain.Credentials;
 import stateless.spring.security.domain.Employee;
 import stateless.spring.security.dto.entity.employee.*;
 import stateless.spring.security.repository.CredentialsRepository;
 import stateless.spring.security.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import stateless.spring.security.service.crypto.PasswordResolver;
 
 @Service
 public class EmployeeService {
@@ -17,6 +19,9 @@ public class EmployeeService {
 
 	@Autowired
 	private CredentialsRepository credentialsRepository;
+
+	@Autowired
+	private PasswordResolver passwordResolver;
 
 	public ProfileDto fetchProfile(Employee employee){
 		return new ProfileDto(employee);
@@ -56,8 +61,11 @@ public class EmployeeService {
 		return employeeDto;
 	}
 
-	public void saveEmployee(CredentialsDto credentialsDto) {
-		credentialsRepository.save(credentialsDto.buildEmployee());
+	public Employee saveEmployee(CredentialsDto credentialsDto) {
+		Credentials credentials = credentialsDto.buildEmployee();
+		passwordResolver.encode(credentials);
+		credentialsRepository.save(credentials);
+		return credentials.getEmployee();
 	}
 
 	public void updateEmployee(EmployeeDto current, EmployeeDto employee) {

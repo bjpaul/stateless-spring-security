@@ -1,12 +1,17 @@
 package stateless.spring.security.domain;
 
+import org.hibernate.annotations.*;
 import stateless.spring.security.enums.Authority;
 
 import java.util.Collection;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 
 @Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="credentials")
 public class Credentials{
 
     @Id
@@ -14,12 +19,15 @@ public class Credentials{
 
     private String password;
 
+    private String salt;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(
             name = "credentials_with_role",
             joinColumns = @JoinColumn(name = "username")
     )
     @Enumerated(EnumType.STRING)
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region="authorities")
     private Collection<Authority> authorities;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -66,6 +74,14 @@ public class Credentials{
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     @Override

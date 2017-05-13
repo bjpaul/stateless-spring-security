@@ -1,0 +1,47 @@
+<ehcache>
+	<diskStore path="java.io.tmpdir/ehcache"/>
+	<cache name="token_storage"
+		   maxElementsInMemory="100"
+		   eternal="false"
+		   timeToIdleSeconds="300"
+		   timeToLiveSeconds="1800"
+		   overflowToDisk="true"
+		   maxElementsOnDisk="10000000"
+		   diskPersistent="false"
+		   diskExpiryThreadIntervalSeconds="120"
+		   memoryStoreEvictionPolicy="LRU"/>
+
+	<cache name="credentials"
+		   maxElementsInMemory="100"
+		   eternal="false"
+		   timeToIdleSeconds="300"
+		   timeToLiveSeconds="1800"
+		   overflowToDisk="true"
+		   maxElementsOnDisk="10000000"
+		   diskPersistent="false"
+		   diskExpiryThreadIntervalSeconds="120"
+		   memoryStoreEvictionPolicy="LRU"/>
+
+	<cache name="authorities"
+		   maxElementsInMemory="100"
+		   eternal="false"
+		   timeToIdleSeconds="300"
+		   timeToLiveSeconds="1800"
+		   overflowToDisk="true"
+		   maxElementsOnDisk="10000000"
+		   diskPersistent="false"
+		   diskExpiryThreadIntervalSeconds="120"
+		   memoryStoreEvictionPolicy="LRU"/>
+
+	<cache name="employee"
+		   maxElementsInMemory="100"
+		   eternal="false"
+		   timeToIdleSeconds="300"
+		   timeToLiveSeconds="1800"
+		   overflowToDisk="true"
+		   maxElementsOnDisk="10000000"
+		   diskPersistent="false"
+		   diskExpiryThreadIntervalSeconds="120"
+		   memoryStoreEvictionPolicy="LRU"/>
+
+</ehcache>

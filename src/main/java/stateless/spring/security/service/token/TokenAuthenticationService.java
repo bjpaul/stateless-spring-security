@@ -14,6 +14,7 @@ public abstract class TokenAuthenticationService {
 
     public Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     protected final String AUTH_HEADER_NAME = "MY-CUSTOM-TOKEN";
 
     protected abstract String generateToken(Authentication authentication);

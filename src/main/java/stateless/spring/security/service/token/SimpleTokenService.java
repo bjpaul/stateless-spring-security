@@ -11,7 +11,6 @@ import java.util.UUID;
 
 public class SimpleTokenService extends TokenAuthenticationService{
 
-
     public static Map<String, Authentication> tokenStore = new HashMap<>();
 
     @Override
