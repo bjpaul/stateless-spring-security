@@ -7,7 +7,7 @@ docker run --net my-env -itd --name mysql-container -e MYSQL_ROOT_PASSWORD=root 
 
 docker run --restart=always -itd --name logs-container bijoydocker/logs-image
 
-docker run --net my-env -itd --name app-container -p 9090:8080 --volumes-from logs-container bijoydocker/restful-security
+docker run --net my-env -itd --name app-container --env-file=app.env -p 9090:8080 --volumes-from logs-container bijoydocker/restful-security
 
 To Stop:
 docker commit -m "initial logs added" logs-container bijoydocker/logs-image
