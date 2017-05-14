@@ -1,0 +1,5 @@
+applications:
+- name: restful-security
+  memory: 512M
+  host: restful-security
+  path: build/libs/rest-security-0.0.1-SNAPSHOT.war
